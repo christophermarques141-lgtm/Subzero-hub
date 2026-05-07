@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lessons</title>
+    <style>
+
+        /* Fullscreen background */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("wallpaper.png") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .glass-bg {
+            background-color: rgba(0, 0, 0, 0.7);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            z-index: -1;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Search Bar */
+        #searchBar {
+            margin: 0px;
+            backdrop-filter: blur(2px);
+            padding: 15px;
+            height: 10px;
+            width: 500px;
+            border-radius: 40px;
+            border: none;
+            font-size: 16px;
+            position: fixed;
+            bottom:5%;
+            transform: translateY(105%);
+            right: 50%;
+            box-shadow: 0 0 8px rgb(121, 121, 121 0.5);
+            transform: translateX(50%);
+            background-color: rgb(0, 0, 0, 0.6);
+            color: white;
+            transition: 0.3s;
+            z-index: 2;
+            box-shadow: 0 0 0.4rem rgb(73, 73, 73);
+        }
+        #searchBar:hover {
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            padding: 10px;
+            max-width: 1600px;
+            margin: 0px auto 50px;
+        }
+
+        /* Wrapper for Image + Title */
+        .game-item {
+            display: flex;
+            opacity: 0.9;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            position: relative; /* Important for positioning context */
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.623);
+            transition: transform 0.3s ease;
+            display: block;
+            z-index: 1;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        /* Hover effect for the image */
+        .game-item:hover .card {
+            transform: scale(1.05);
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgb(73, 73, 73);
+            opacity: 1;
+        }
+
+        /* Game Title Caption - HIDDEN BY DEFAULT */
+        .gametitle {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 8px;
+            text-shadow: 0px 1px 1px black;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            
+            /* Hiding the title */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px); /* Slight lift for animation */
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            
+            /* Prevents the text from blocking mouse events on the image */
+            pointer-events: none; 
+            z-index: 2;
+        }
+
+        /* SHOW TITLE ON HOVER */
+        .game-item:hover .gametitle {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .close-game-panel {
+            position: fixed;
+            color: rgba(255, 255, 255);
+            font-family: 'Courier New', Courier, monospace;
+             box-shadow: 0 0 0.4rem rgb(73, 73, 73);
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            left: 69%;
+            border: none;
+            font-size: 24px;
+            border-radius: 50px;
+            margin: 20px;
+            bottom: 2%;
+            z-index: 4;
+            width: 20px;
+            height: 20px;
+            padding: 10px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+            justify-content: center;
+        }
+
+        .close-game-panel:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+            transform: scale(1.2);
+            transition: 0.3s;
+        }
+        .taskbar-bg {
+             margin: 0px;
+            box-shadow: 0 0 5px rgb(121, 121, 121, 0.5);
+            backdrop-filter: blur(2px);
+            padding: 15px;
+            height: 2rem;
+            width: 40rem;
+            border-radius: 40px;
+            border: grey 6px;
+            font-size: 16px;
+            position: fixed;
+            bottom: 1.4rem;
+            transform: translateY(105%);
+            right: 47%;
+            
+            transform: translateX(50%);
+            background-color: rgb(0, 0, 0, 0.6);
+            color: white;
+            transition: 0.3s;
+            z-index: 2;
+        }
+        </style>
+    <div class="taskbar-bg"></div>
+</head>
+<body>
+    <div class="glass-bg"></div>
+
+    <input type="text" id="searchBar" placeholder="Search for 350 games...">
+    <!-- Trending Section (Inside the grid) -->
+<div class="grid trending-grid">
+    <!-- Title as a grid item spanning all columns -->
+    <div class="trending-item" style="grid-column: 1 / -1; text-align: center; margin-bottom: 10px;">
+        <h1 style="color: white; font-size: 24px; margin: 0; text-shadow: 0px 2px 4px black;">Trending Now</h1>
+    </div>
+
+    <!-- Item 1 -->
+    <div class="game-item">
+        <a href="gamehtml/DTA_6.html">
+            <img src="gamepng/dta6.jpg" alt="Dta 6" class="card">
+        </a>
+        <span class="gametitle">DTA 6</span>
+    </div>
+
+    <!-- Item 2 -->
+    <div class="game-item">
+        <a href="gamehtml/Lego_Batman_2 (1).html">
+            <img src="gamepng/LB.webp" alt="Lego Batman" class="card">
+        </a>
+        <span class="gametitle">Lego Batman</span>
+    </div>
+
+    <!-- Item 3 -->
+    <div class="game-item">
+        <a href="gamehtml/Lego_Starwars_Complete_Saga (1).html">
+            <img src="gamepng/lego-star-wars.webp" alt="Lego Star Wars" class="card">
+        </a>
+        <span class="gametitle">Lego Star Wars</span>
+    </div>
+
+    <!-- Item 4 -->
+    <div class="game-item">
+        <a href="gamehtml/Only_Up.html">
+            <img src="gamepng/onlyup.jpg" alt="Only Up" class="card">
+        </a>
+        <span class="gametitle">Only Up</span>
+    </div>
+    
+    <!-- Item 5 -->
+    <div class="game-item">
+        <a href="gamehtml/GTA__Vice_City.html">
+            <img src="gamepng/grand-theft-auto-vice-city-logo-2.webp" alt="Gta Vice City" class="card">
+        </a>
+        <span class="gametitle">Gta Vice City</span>
+    </div>
+</div>
+<hr>
+    <div class="grid">
+        <!-- Item 1 -->
+        <div class="game-item">
+            <a href="gamehtml/ULTRAKILL.html">
+                <img src="gamepng/ULTRAKILL.png" alt="ULTRAKILL" class="card">
+            </a>
+            <span class="gametitle">Ultrakill</span>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="game-item">
+            <a href="gamehtml/Bowmasters.html">
+                <img src="gamepng/Bowmasters.png" alt="Bowmasters" class="card">
+            </a>
+            <span class="gametitle">Bowmasters</span>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="game-item">
+            <a href="gamehtml/GD.html">
+                <img src="gamepng/GD.png" alt="Geometry Dash" class="card">
+            </a>
+            <span class="gametitle">Geometry Dash</span>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="game-item">
+            <a href="gamehtml/WarTheknights.html">
+                <img src="gamepng/Wartheknight.png" alt="War The Knights" class="card">
+            </a>
+            <span class="gametitle">War The Knights</span>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="game-item">
+            <a href="gamehtml/BR.html">
+                <img src="gamepng/BR.png" alt="Basket Random" class="card">
+            </a>
+            <span class="gametitle">Basket Random</span>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="game-item">
+            <a href="gamehtml/PPG.html">
+                <img src="gamepng/PPG.png" alt="People Playground" class="card">
+            </a>
+            <span class="gametitle">People Playground</span>
+        </div>
+
+        <!-- Item 7 -->
+        <div class="game-item">
+            <a href="gamehtml/OF.html">
+                <img src="gamepng/OF.png" alt="Office Fight" class="card">
+            </a>
+            <span class="gametitle">Office Fight</span>
+        </div>
+
+        <!-- Item 8 -->
+        <div class="game-item">
+            <a href="gamehtml/BABA.html">
+                <img src="gamepng/BABA.png" alt="Build a Big Army" class="card">
+            </a>
+            <span class="gametitle">Build a Big Army</span>
+        </div>
+
+        <!-- Item 9 -->
+        <div class="game-item">
+            <a href="gamehtml/ragdoll-archers.html">
+                <img src="gamepng/archer.webp" alt="Ragdoll Archers" class="card">
+            </a>
+            <span class="gametitle">Ragdoll Archers</span>
+        </div>
+
+        <!-- Item 10 -->
+        <div class="game-item">
+            <a href="gamehtml/ragdoll.html">
+                <img src="gamepng/hit.webp" alt="Ragdoll Hit" class="card">
+            </a>
+            <span class="gametitle">Ragdoll Hit</span>
+        </div>
+
+        <!-- Item 11 -->
+        <div class="game-item">
+            <a href="gamehtml/paperio2.html">
+                <img src="gamepng/paperio.webp" alt="Paper IO" class="card">
+            </a>
+            <span class="gametitle">Paper IO</span>
+        </div>
+
+        <!-- Item 12 -->
+        <div class="game-item">
+            <a href="gamehtml/MC.html">
+                <img src="gamepng/MC-1.21.png" alt="Minecraft 1.21" class="card">
+            </a>
+            <span class="gametitle">Minecraft 1.21</span>
+        </div>
+
+        <!-- Item 13 -->
+        <div class="game-item">
+            <a href="gamehtml/Raft.html">
+                <img src="gamepng/Raf.png" alt="Raft" class="card">
+            </a>
+            <span class="gametitle">Raft</span>
+        </div>
+
+        <!-- Item 14 -->
+        <div class="game-item">
+            <a href="gamehtml/Growden.io.html">
+                <img src="gamepng/gag.png" alt="Grow a Garden" class="card">
+            </a>
+            <span class="gametitle">Grow a Garden</span>
+        </div>
+
+        <!-- Item 15 -->
+        <div class="game-item">
+            <a href="gamehtml/Half Life.html">
+                <img src="gamepng/HL.png" alt="HalfLife" class="card">
+            </a>
+            <span class="gametitle">Half-Life</span>
+        </div>
+
+        <!-- Item 16 -->
+        <div class="game-item">
+            <a href="gamehtml/Friday Night Funkin.html">
+                <img src="gamepng/fnf.png" alt="Friday Night Funkin" class="card">
+            </a>
+            <span class="gametitle">Friday Night Funkin</span>
+        </div>
+
+        <!-- Item 17 -->
+        <div class="game-item">
+            <a href="gamehtml/Time Shooter 1.html">
+                <img src="gamepng/TS1.png" alt="Time Shooter 1" class="card">
+            </a>
+            <span class="gametitle">Time Shooter 1</span>
+        </div>
+
+        <!-- Item 18 -->
+        <div class="game-item">
+            <a href="gamehtml/Time Shooter 2.html">
+                <img src="gamepng/TS2.png" alt="Time Shooter 3" class="card">
+            </a>
+            <span class="gametitle">Time Shooter 2</span>
+        </div>
+
+        <!-- Item 19 -->
+        <div class="game-item">
+            <a href="gamehtml/Time Shooter 3_ SWAT.html">
+                <img src="gamepng/TS3.png" alt="Time Shooter 3" class="card">
+            </a>
+            <span class="gametitle">Time Shooter 3 SWAT</span>
+        </div>
+
+        <!-- Item 20 -->
+        <div class="game-item">
+            <a href="gamehtml/Half Life.html">
+                <img src="gamepng/HL.png" alt="HalfLife" class="card">
+            </a>
+            <span class="gametitle">Half-Life</span>
+        </div>
+
+        <!-- Item 21 -->
+        <div class="game-item">
+            <a href="gamehtml/Brawl Simulator 3D.html">
+                <img src="gamepng/BS.png" alt="Brawl Stars" class="card">
+            </a>
+            <span class="gametitle">Brawl Simulator 3D</span>
+        </div>
+
+        <!-- Item 22 -->
+        <div class="game-item">
+            <a href="gamehtml/Gorilla Tag.html">
+                <img src="gamepng/Gorilla-tag.png" alt="Gorilla Tag" class="card">
+            </a>
+            <span class="gametitle">Gorilla Tag</span>
+        </div>
+
+        <!-- Item 23 -->
+        <div class="game-item">
+            <a href="gamehtml/Gladihoppers.html">
+                <img src="gamepng/GH.png" alt="GladiHoppers" class="card">
+            </a>
+            <span class="gametitle">Gladi Hoppers</span>
+        </div>
+
+        <!-- Item 24 -->
+        <div class="game-item">
+            <a href="gamehtml/Melon Playground.html">
+                <img src="gamepng/MP.png" alt="Melon Sandbox" class="card">
+            </a>
+            <span class="gametitle">Melon Sandbox</span>
+        </div>
+
+        <!-- Item 25 -->
+        <div class="game-item">
+            <a href="gamehtml/Brotato.html">
+                <img src="gamepng/BT.png" alt="Brotato" class="card">
+            </a>
+            <span class="gametitle">Brotato</span>
+        </div>
+                <div class="game-item">
+            <a href="gamehtml/Jetpack Joyride.html">
+                <img src="gamepng/JJ.png" alt="Jetpack Joyride" class="card">
+            </a>
+            <span class="gametitle">Jetpack Joyride</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Survivor.io.html">
+                <img src="gamepng/SI.png" alt="Survivor Io" class="card">
+            </a>
+            <span class="gametitle">Survivor.Io</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Moto X3M.html">
+                <img src="gamepng/MX3M.png" alt="Moto X3M" class="card">
+            </a>
+            <span class="gametitle">Moto X3M</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Supreme Duelist.html">
+                <img src="gamepng/SD.png" alt="Supreme Dual 2019" class="card">
+            </a>
+            <span class="gametitle">Supreme Dual 2019</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Supermarket 3D.html">
+                <img src="gamepng/SM3D.png" alt="Supermarket 3D" class="card">
+            </a>
+            <span class="gametitle">Supermarket 3D</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/MH.html">
+                <img src="gamepng/hotline miami.webp" alt="Hotline Miami" class="card">
+            </a>
+            <span class="gametitle">Hotline Miami</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Quake III Arena.html">
+                <img src="gamepng/Q3A.png" alt="Quake 3 Arena" class="card">
+            </a>
+            <span class="gametitle">Quake III Arena</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/DOOM (1).html">
+                <img src="gamepng/doom.webp" alt="Doom" class="card">
+            </a>
+            <span class="gametitle">Doom</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Doom 2.html">
+                <img src="gamepng/doom2.png" alt="Doom 2" class="card">
+            </a>
+            <span class="gametitle">Doom 2</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Doom 3.html">
+                <img src="gamepng/doom3.png" alt="Doom 3" class="card">
+            </a>
+            <span class="gametitle">Doom 3</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Boxing Random.html">
+                <img src="gamepng/boxing-random.png" alt="Boxing Random" class="card">
+            </a>
+            <span class="gametitle">Boxing Random</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Pixel Gun Survival.html">
+                <img src="gamepng/PGS.png" alt="Pixel Gun Survival" class="card">
+            </a>
+            <span class="gametitle">Pixel Gun Survival</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Monster Tracks.html">
+                <img src="gamepng/MT.png" alt="Monster Tracks" class="card">
+            </a>
+            <span class="gametitle">Monster Tracks</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Vex 8.html">
+                <img src="gamepng/Vex 8.png" alt="Vex 8" class="card">
+            </a>
+            <span class="gametitle">Vex 8</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Terraria (1).html">
+                <img src="gamepng/TA.png" alt="Terraria" class="card">
+            </a>
+            <span class="gametitle">Terraria</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/Johnny Trigger.html">
+                <img src="gamepng/JT.png" alt="Johnny Trigger" class="card">
+            </a>
+            <span class="gametitle">Johnny Trigger</span>
+        </div>
+        <div class="game-item">
+            <a href="gamehtml/subway_surfers.html">
+                <img src="gamepng/SS.webp" alt="Subway Surfers" class="card">
+            </a>
+            <span class="gametitle">Subway Surfers</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/balatro.html">
+                <img src="gamepng/balatro.webp" alt="Balatro" class="card">
+            </a>
+            <span class="gametitle">Balatro</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Block Blast.html">
+                <img src="gamepng/BB.png" alt="Block Blast" class="card">
+            </a>
+            <span class="gametitle">Block Blast</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Escape Road.html">
+                <img src="gamepng/ER.png" alt="Escape Road" class="card">
+            </a>
+            <span class="gametitle">Escape Road</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Escape Road 2.html">
+                <img src="gamepng/ER2.png" alt="Escape Road 2" class="card">
+            </a>
+            <span class="gametitle">Escape Road 2</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Escape Road 3.html">
+                <img src="gamepng/ER3.png" alt="Escape Road 3" class="card">
+            </a>
+            <span class="gametitle">Escape Road 3</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Escape Road City 2.html">
+                <img src="gamepng/ERC2.png" alt="Escape Road City 2" class="card">
+            </a>
+            <span class="gametitle">Escape Road City 2</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Bendy and the Ink Machine_ ALL CHAPTERS.html">
+                <img src="gamepng/bendyinkall.png" alt="REPO" class="card">
+            </a>
+            <span class="gametitle">All Bendy Chapters</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Plauge Inc.html">
+                <img src="gamepng/plauge.png" alt="Plague Inc" class="card">
+            </a>
+            <span class="gametitle">Plague Inc</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/russian_counter_strike.html">
+                <img src="gamepng/counterstrike_squircle-512.webp" alt="Counter strike" class="card">
+            </a>
+            <span class="gametitle">Counter Strike</span>
+    </div>
+    <div class="game-item">
+            <a href="gamehtml/Iron Lung.html">
+                <img src="gamepng/IL.png" alt="Iron Lung" class="card">
+            </a>
+            <span class="gametitle">Iron Lung</span>
+    </div>
+   </div>
+
+        
+        <a href="index.html"><img class="close-game-panel" src="assets/close.png"></a>
+    </a>
+
+    <script>
+    document.getElementById('searchBar').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    // Select games, trending header, AND the hr tag
+    const allItems = document.querySelectorAll('.game-item, .trending-item');
+    const divider = document.getElementById('search-divider');
+
+    allItems.forEach(item => {
+        const isTrendingHeader = item.classList.contains('trending-item');
+        const isGameItem = item.classList.contains('game-item');
+
+        if (isTrendingHeader) {
+            // Show header only if search is empty OR includes "trending"
+            if (searchTerm === '' || searchTerm.includes('trending')) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        } 
+        else if (isGameItem) {
+            const card = item.querySelector('.card');
+            if (card) {
+                const altText = card.alt.toLowerCase();
+                if (altText.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        }
+    });
+
+    // Handle the HR tag visibility
+    if (divider) {
+        if (searchTerm === '' || searchTerm.includes('trending')) {
+            divider.style.display = '';
+        } else {
+            divider.style.display = 'none';
+        }
+        
+    }
+});
+    </script>
+</body>
+</html>

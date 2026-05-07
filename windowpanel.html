@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apps</title>
+    <style>
+        /* Fullscreen background */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("wallpaper.png") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .glass-bg {
+            background-color: rgba(0, 0, 0, 0.7);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            top: 0px;
+            z-index: -1;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 20px;
+            padding: 10px;
+            max-width: 1600px;
+            margin: 60px auto 0;
+        }
+
+        /* Wrapper for Image + Title */
+        .game-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            position: relative; /* Important for positioning context */
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            display: block;
+            z-index: 1;
+        }
+
+        /* Hover effect for the image */
+        .game-item:hover .card {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Game Title Caption - HIDDEN BY DEFAULT */
+        .gametitle {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 8px;
+            text-shadow: 1px 1px 2px black;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            
+            /* Hiding the title */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px); /* Slight lift for animation */
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            
+            /* Prevents the text from blocking mouse events on the image */
+            pointer-events: none; 
+            z-index: 2;
+        }
+
+        /* SHOW TITLE ON HOVER */
+        .game-item:hover .gametitle {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .close-game-panel {
+            position: fixed;
+            margin: 0px;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50px;
+            box-shadow:0 0 0.3rem rgb(126, 126, 126);
+            bottom: 1.4rem;
+            left: 60rem;
+            z-index: 4;
+            width: 2.4rem;
+            height: 2.4rem;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-game-panel:hover {
+            background-color: rgb(24, 23, 23);
+            color: white;
+        }
+        .taskbar-bg {
+             margin: 0px;
+            box-shadow: 0 0 5px rgb(121, 121, 121, 0.5);
+            backdrop-filter: blur(2px);
+            padding: 15px;
+            height: 2rem;
+            width: 620px;
+            border-radius: 40px;
+            border: grey 6px;
+            font-size: 16px;
+            position: fixed;
+            bottom: 0.6rem;
+            transform: translateY(105%);
+            right: 47%;
+            
+            transform: translateX(50%);
+            background-color: rgb(0, 0, 0, 0.6);
+            color: white;
+            transition: 0.3s;
+            z-index: 2;
+        }
+        #searchBar {
+            margin: 0px;
+            backdrop-filter: blur(2px);
+            padding: 15px;
+            height: 10px;
+            width: 500px;
+            border-radius: 40px;
+            border: none;
+            font-size: 16px;
+            position: fixed;
+            bottom:1.3rem;
+            transform: translateY(105%);
+            right: 50%;
+                        box-shadow:0 0 0.3rem rgb(126, 126, 126);
+            transform: translateX(50%);
+            background-color: rgb(0, 0, 0, 0.6);
+            color: white;
+            transition: 0.3s;
+            z-index: 2;
+        }
+        #searchBar:hover {
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="taskbar-bg"></div>
+    
+
+    <input type="text" id="searchBar" placeholder="Search for Apps...">
+
+    <div class="grid">
+        <!-- Item 1 -->
+            <div class="game-item">
+            <a href="playstation.html">
+                <img src="assets/playstation.webp" alt="Play Station" class="card">
+            </a>
+            <span class="gametitle">Play Station</span>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="game-item">
+            <a href="gamehtml/chatgpt.html">
+                <img src="assets/chatgpt.svg" alt="Chatgpt" class="card">
+            </a>
+            <span class="gametitle">Chatgpt</span>
+        </div>
+
+    
+    </div>
+        
+    <a href="index.html">
+        <img src="assets/close.png" class="close-game-panel">
+    </a>
+
+    <script>
+        document.getElementById('searchBar').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const altText = card.alt.toLowerCase();
+                // Show card if the search term is in the alt text, otherwise hide it
+                // Target the .game-item parent (grandparent of the card)
+                card.parentElement.parentElement.style.display = altText.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

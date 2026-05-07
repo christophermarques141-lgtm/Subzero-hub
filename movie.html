@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("wallpaper.png") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll on zoom */
+        }
+
+        /* Glass Overlay */
+        .glass-bg {
+            background-color: rgba(0, 0, 0, 0.6);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            backdrop-filter: blur(6px);
+        }
+
+        h1 {
+            color: white;
+            margin: 30px 20px;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-size: 2.5rem;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, rgba(115, 142, 177, 0.3), rgba(255, 255, 255, 0.8), rgba(115, 142, 177, 0.3));
+            max-width: 100%;
+            left: 50%;
+            position: static;
+            border: top 10px; rgba:(0, 0, 0, 0.9) ;
+        }
+
+        /* Search Bar - Responsive & Fixed Position */
+        #searchBar {
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        #searchBar::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #searchBar:hover, #searchBar:focus {
+            background-color: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 25px rgba(89, 128, 165, 0.5);
+            border-color: rgba(89, 128, 165, 0.6);
+        }
+
+        /* Responsive Grid */
+        .grid {
+            display: grid;
+            /* Auto-fill: creates columns based on available space */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            padding: 140px 40px 60px; /* Top padding clears the fixed search bar */
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Movie Card Wrapper */
+        .game-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .card {
+            width: 100%;
+            aspect-ratio: 2/3; /* Maintains poster aspect ratio */
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s;
+            display: block;
+            background-color: #1a1a1a;
+            opacity: 0.85;
+        }
+
+        /* Hover Effects */
+        .game-item:hover .card {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(89, 128, 165, 0.4);
+            opacity: 1;
+        }
+
+        /* Title Caption */
+        .gametitle {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 10px;
+            width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+
+        .game-item:hover .gametitle {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Home Button (Close Panel) */
+        .close-game-panel {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            z-index: 200;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-game-panel:hover {
+
+            transform: scale(1.1);
+            box-shadow: 0 0px 20px rgba(89, 128, 165, 0.6);
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                padding: 120px 20px 60px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-bg"></div>
+
+    <input type="text" id="searchBar" placeholder="Search Through The Theaters...">
+    
+    <h1>Cinema</h1>
+    <hr>
+
+    <div class="grid">
+        <!-- Dexter: Resurrection -->
+        <div class="game-item">
+            <a href="movies/Project-Hail-Mary.html">
+                <img src="assets/dexter resurrection.webp" alt="Dexter: Resurrection" class="card">
+            </a>
+            <span class="gametitle">Dexter: Resurrection</span>
+        </div>
+        
+        <!-- Dexter: Original Sin -->
+        <div class="game-item">
+            <a href="movies/Project-Hail-Mary.html">
+                <img src="assets/dexterorignial.webp" alt="Dexter: Original Sin" class="card">
+            </a>
+            <span class="gametitle">Dexter: Original Sin</span>
+        </div>
+        
+        <!-- Scream 7 -->
+        <div class="game-item">
+            <a href="movies/scream-7.html">
+                <img src="assets/scream-7.webp" alt="Scream 7" class="card">
+            </a>
+            <span class="gametitle">Scream 7</span>
+        </div>
+        
+        <!-- Project Hail Mary -->
+        <div class="game-item">
+            <a href="movies/Project-Hail-Mary.html">
+                <img src="assets/PHM.webp" alt="Project Hail Mary" class="card">
+            </a>
+            <span class="gametitle">Project: Hail Mary</span>
+        </div>
+        
+        <!-- Michael Jackson -->
+        <div class="game-item">
+            <a href="movies/MJ.html">
+                <img src="assets/MJ.webp" alt="Micheal Jackson" class="card">
+            </a>
+            <span class="gametitle">Micheal Jackson</span>
+        </div>
+        
+        <!-- Backrooms -->
+        <div class="game-item">
+            <a href="movies/Backrooms.html">
+                <img src="assets/backrooms.webp" alt="Backrooms" class="card">
+            </a>
+            <span class="gametitle">Backrooms</span>
+        </div>
+        
+        <!-- Spiderman -->
+        <div class="game-item">
+            <a href="movies/spiderman.html">
+                <img src="assets/spiderman.webp" alt="Spiderman New Day" class="card">
+            </a>
+            <span class="gametitle">Spiderman</span>
+        </div>
+        
+        <!-- Avatar: Fire & Ash -->
+        <div class="game-item">
+            <a href="movies/avater.html">
+                <img src="assets/avatermovie.webp" alt="avater: fire & ash" class="card">
+            </a>
+            <span class="gametitle">Avater: Fire & Ash</span>
+        </div>
+        
+        <!-- Dexter -->
+        <div class="game-item">
+            <a href="movies/Project-Hail-Mary.html">
+                <img src="assets/dexter.webp" alt="Dexter" class="card">
+            </a>
+            <span class="gametitle">Dexter</span>
+        </div>
+        
+        <!-- Crime 101 -->
+        <div class="game-item">
+            <a href="movies/crime101.html">
+                <img src="assets/crime 101.webp" alt="Crime 101" class="card">
+            </a>
+            <span class="gametitle">Crime 101</span>
+        </div>
+        
+        <!-- Transformers -->
+        <div class="game-item">
+            <a href="movies/transformers.html">
+                <img src="assets/transformers.webp" alt="Transformers" class="card">
+            </a>
+            <span class="gametitle">Transformers</span>
+        </div>
+        
+        <!-- Avengers: End Game -->
+        <div class="game-item">
+            <a href="movies/avengers.html">
+                <img src="assets/avengers.webp" alt="Avengers: End Game" class="card">
+            </a>
+            <span class="gametitle">Avengers: End Game</span>
+        </div>
+        
+        <!-- Five Nights At Freddy 2 -->
+        <div class="game-item">
+            <a href="movies/fnaf2.html">
+                <img src="assets/fnaf2.webp" alt="Five Nights At Freddy 2" class="card">
+            </a>
+            <span class="gametitle">Five Nights At Freddy 2</span>
+        </div>
+        
+        <!-- Hoppers -->
+        <div class="game-item">
+            <a href="movies/hoppers.html">
+                <img src="assets/Hoppers.webp" alt="Hoppers" class="card">
+            </a>
+            <span class="gametitle">Hoppers</span>
+        </div>
+        
+        <!-- Swapped -->
+        <div class="game-item">
+            <a href="movies/swapped.html">
+                <img src="assets/Swapped.webp" alt="Swapped" class="card">
+            </a>
+            <span class="gametitle">Swapped</span>
+        </div>
+    </div>
+
+    <a href="index.html" class="close-game-panel"><img src="assets/close.png" width="50px"></a>
+        <!-- Using an SVG for cleaner scaling -->
+
+        </svg>
+    </a>
+
+    <script>
+        document.getElementById('searchBar').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const items = document.querySelectorAll('.game-item');
+            
+            items.forEach(item => {
+                const card = item.querySelector('.card');
+                const altText = card.alt.toLowerCase();
+                
+                // Show/hide the entire item wrapper
+                item.style.display = altText.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

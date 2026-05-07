@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Dashboard </title>
+    <h2>Subzero</h2>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("wallpaper.png") no-repeat center center fixed;
+            background-size: cover;
+            /* Removed overflow: hidden to prevent cutting off content when zoomed */
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100vh;
+            min-height: 100vh;
+        }
+
+        /* --- Updated Taskbar Container --- */
+        .taskbar {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 2rem; /* Use rem for relative scaling */
+            
+            /* Responsive Width */
+            width: auto; 
+            min-width: 400px;
+            max-width: 100%; /* Prevent it from touching edges on small screens */
+            
+            /* Dynamic Height */
+            height: auto;
+            min-height: 3rem;
+            padding: 0.5rem 1.5rem;
+            
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: 0.3s;
+            
+            /* Flexbox for layout */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap; /* CRITICAL: Allows icons to wrap when zoomed in */
+            gap: 1.5rem; /* Space between icons (relative) */
+        }
+
+        .taskbar:hover {
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* App Card Styling */
+        .app-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            /* Removed fixed width/height to let content dictate size */
+            flex: 0 0 auto; 
+        }
+
+        .app-thumbnail {
+            /* Use rem so it scales with browser zoom */
+            width: 3rem; 
+            height: 3rem;
+            object-fit: contain;
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        /* Hover effect */
+        .app-card:hover .app-thumbnail {
+            transform: scale(1.15) translateY(-5px);
+        }
+
+        /* Tooltip (App Title) */
+        .apptitle {
+            position: absolute;
+            top: calc(-100% - 10px); /* Dynamic positioning relative to icon */
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s ease;
+            pointer-events: none;
+            /* Ensure tooltip doesn't get cut off */
+            z-index: 1001; 
+        }
+
+        /* Show tooltip on hover */
+        .app-card:hover .apptitle {
+            opacity: 1;
+            visibility: visible;
+            top: calc(-100% - 15px); /* Slide up animation */
+        }
+
+        #searchBar {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            /* Relative padding and width */
+            padding: 1rem 2.5rem;
+            width: 30rem;
+            max-width: 80vw; /* Prevents going off screen */
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 50%;
+            transition: 0.3s;
+            text-align: center;
+            font-size: 1rem; /* Ensures text scales */
+        }
+        #searchBar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            stroke-color: rgb(14, 207, 255);
+
+        }
+        #searchBar:hover {
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        h2 {
+            color: rgb(226, 238, 255);
+            font-family:"Black And White Picture", system-ui;
+            font-weight: lighter;
+            font-size: 9rem;
+            overflow: hidden;
+            position: fixed;
+            text-align: center;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+         
+    <!-- Taskbar -->
+    <div class="taskbar">
+        
+        <!-- App 1 -->
+        <a href="Games.html" class="app-card">
+            <img src="assets/game.png" class="app-thumbnail" alt="Game">
+            <span class="apptitle">Games</span>
+        </a>
+
+        <!-- App 2 -->
+        <a href="windowpanel.html" class="app-card">
+            <img src="assets/app.png" class="app-thumbnail" alt="More Apps">
+            <span class="apptitle">More</span>
+        </a>
+
+        <!-- App 3 -->
+        <a href="windowpanel.html" class="app-card">
+            <img src="assets/settings_300dp_E3E3E3_FILL0_wght400_GRAD0_opsz48 (1).svg" class="app-thumbnail" alt="Settings">
+            <span class="apptitle">Settings</span>
+        </a>
+        <a href="movie.html" class="app-card">
+            <img src="assets/movie_300dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.png" class="app-thumbnail" alt="Movies">
+            <span class="apptitle">Movies</span>
+        </a>
+         <a href="proxy.html" class="app-card">
+            <img src="assets/proxy.png" class="app-thumbnail" alt="Movies">
+            <span class="apptitle">Proxy</span>
+        </a>
+
+    </div>
+
+    <input type="text" id="searchBar" placeholder="Search a url or query">
+</body>
+</html>
